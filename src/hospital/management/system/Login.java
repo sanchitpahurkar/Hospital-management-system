@@ -2,11 +2,14 @@ package hospital.management.system;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 
-public class Login extends JFrame{
+public class Login extends JFrame implements ActionListener{
 
     JTextField textField;
-    JPasswordField jpasswordField;
+    JPasswordField jPasswordField;
     JButton b1,b2;
 
     Login() {
@@ -32,11 +35,11 @@ public class Login extends JFrame{
         add(textField);
 
         // password input field
-        jpasswordField = new JPasswordField();
-        jpasswordField.setBounds(150,70,150,30);
-        jpasswordField.setFont(new Font("Tahoma",Font.PLAIN,16));
-        jpasswordField.setBackground(new Color(255,179,0));
-        add(jpasswordField);
+        jPasswordField = new JPasswordField();
+        jPasswordField.setBounds(150,70,150,30);
+        jPasswordField.setFont(new Font("Tahoma",Font.PLAIN,16));
+        jPasswordField.setBackground(new Color(255,179,0));
+        add(jPasswordField);
 
         // logo image
         ImageIcon imageIcon = new ImageIcon(ClassLoader.getSystemResource("icon/login.png"));
@@ -52,6 +55,7 @@ public class Login extends JFrame{
         b1.setFont(new Font("serif",Font.BOLD,16));
         b1.setBackground(Color.BLACK);
         b1.setForeground(Color.white);
+        b1.addActionListener(this);
         add(b1);
 
         // cancel button
@@ -60,6 +64,7 @@ public class Login extends JFrame{
         b2.setFont(new Font("serif",Font.BOLD,16));
         b2.setBackground(Color.BLACK);
         b2.setForeground(Color.white);
+        b2.addActionListener(this);
         add(b2);
 
         // created the layout of the frame
@@ -71,5 +76,31 @@ public class Login extends JFrame{
     }
     public static void main(String[] args) {
         new Login();
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == b1){
+            try{
+                conn c = new conn();
+                String user = textField.getText();
+                char[] Pass = jPasswordField.getPassword();
+
+                String q = "select * from login where ID = '"+user+"' and  PW = '"+Pass+"'";
+                ResultSet resultSet = c.statement.executeQuery(q);
+
+                if (resultSet.next()){
+                    new Reception();
+                    setVisible(false);
+                }else {
+                    JOptionPane.showMessageDialog(null,"Invalid");
+                }
+
+            }catch (Exception E){
+                E.printStackTrace();
+            }
+
+        }else {
+            System.exit(10);
+        }
     }
 }
